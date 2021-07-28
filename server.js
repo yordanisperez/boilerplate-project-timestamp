@@ -20,20 +20,37 @@ app.get("/", function (req, res) {
 });
 
 app.get("/api",function(req,resp){
-  const date= new Date( Date.now());
-  resp.json({unix:date.getTime() ,utc:date.toUTCString()});
+  const dateTime= new Date( Date.now());
+  resp.json({unix:dateTime.getTime() ,utc:dateTime.toUTCString()});
 })
 
-app.get("/api/2015-12-25",function(req,resp){
-  resp.json({unix:1451001600000,utc:"Fri, 25 Dec 2015 00:00:00 GMT"})
+app.get("/api/:date",function(req,resp,next){
+  const { date } = req.params;
+  const dateTime= new Date(date);
+  if (dateTime.getTime())
+  {
+     resp.json({unix:dateTime.getTime() ,utc:dateTime.toUTCString()});
+     console.log("Peticion Procesada:/api/:date para  UTC ")
+  }
+  else
+     next();
 })
 
-app.get("/api/1451001600000",function(req,resp){
-   resp.json({unix:1451001600000,utc:"Fri, 25 Dec 2015 00:00:00 GMT"});
+app.get("/api/:date",function(req,resp,next){
+  const { date } = req.params;
+  const dateTime= new Date(parseInt(date));
+  if (dateTime.getTime())
+  {
+     resp.json({unix:dateTime.getTime() ,utc:dateTime.toUTCString()});
+     console.log("Peticion Procesada:/api/:date para  UNIX ")
+  }
+  else
+     next();
+
 })
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, resp) {
+app.get("/api/*", function (req, resp) {
   resp.json({error: 'Invalid Date'});
 });
 
